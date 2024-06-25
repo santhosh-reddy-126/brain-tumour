@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Tumour Detector</title>
+    <style>
+        body {
+            background-color: #10439F;
+        }
+        h1 {
+            margin: 40px;
+            margin-left: 40px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            animation: alter 3s ease 0s infinite alternate none;
+        }
+        .form {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            height: 300px;
+        }
+        input {
+            background-color: #F27BBD;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            border: 0px;
+            color: #10439F;
+            font-weight: 700;
+            padding: 10px;
+            border-radius: 20px;
+            font-size: 20px;
+            animation: alter2 1s ease 0s infinite alternate none;
+        }
+        button {
+            background-color: #F27BBD;
+            padding: 5px;
+            animation: alter3 1s ease 0s infinite alternate none;
+            width: 200px;
+            height: 50px;
+            border-radius: 20px;
+            color: #10439F;
+            font-weight: 700;
+            font-size: 20px;
+        }
+        .clas, .msg {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+        }
+        #message2 {
+            color: #F27BBD;
+            font-weight: 700;
+            font-size: 35px;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+        @keyframes alter {
+            0% {
+                color: #874CCC;
+            }
+            50% {
+                color: #C65BCF;
+            }
+            100% {
+                color: #F27BBD;
+            }
+        }
+        @keyframes alter2 {
+            0% {
+                border: 5px dashed #874CCC;
+            }
+            50% {
+                border: 5px dashed #C65BCF;
+            }
+            100% {
+                border: 5px dashed #F27BBD;
+            }
+        }
+        @keyframes alter3 {
+            0% {
+                border: 7px dashed #874CCC;
+            }
+            50% {
+                border: 7px dashed #C65BCF;
+            }
+            100% {
+                border: 7px dashed #F27BBD;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Brain Tumour Detection</h1>
+    <div class="form">
+        <form id="uploadForm" enctype="multipart/form-data" method="POST" action="/upload">
+            <input type="file" id="fileInput" name="file" accept=".jpg, .jpeg" required>
+            <button type="submit">Upload</button>
+        </form>
+    </div>
+    <div class="msg">
+        <div id="message2">
+            {% if prediction %}
+                {{ prediction }}
+            {% endif %}
+        </div>
+    </div>
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            const formData = new FormData();
+            const fileInput = document.getElementById('fileInput');
+            
+            if (fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+                
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    document.open();
+                    document.write(data);
+                    document.close();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            } else {
+                document.getElementById('message2').innerText = 'Please select a file.';
+            }
+        });
+    </script>
+</body>
+</html>
